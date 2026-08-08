@@ -32,19 +32,11 @@ form.addEventListener("submit", async e => {
         
         snackbar.show("Success");
         
-        list.insertAdjacentHTML(
-            "beforeend",
-            `<li class="card">
-                <div>
-                    <h3>${capitalize(name.value)}</h3>
-                    <div class="calories">${calculateCalories(carbs.value, protein.value, fat.value)} calories</div>
-                    <ul class="macros">
-                        <li class="carbs"><div>Carbs</div><div class="value">${capitalize(carbs.value)}g</div></li>
-                        <li class="protein"><div>Protein</div><div class="value">${capitalize(protein.value)}g</div></li>
-                        <li class="fat"><div>Fat</div><div class="value">${capitalize(fat.value)}g</div></li>
-                    </ul>
-                </div>
-            </li>`
+        displayEntry(
+            data.fields.name.stringValue,
+            data.fields.carbs.integerValue,
+            data.fields.protein.integerValue,
+            data.fields.fat.integerValue
         );
 
         form.reset();
@@ -54,31 +46,32 @@ form.addEventListener("submit", async e => {
 const init = () => {
     API.get("/?pageSize=100")
         .then(data => {
-            console.log(data)
             data.documents?.forEach(doc => {
-                const name = capitalize(doc.fields.name.stringValue);
+                const name = doc.fields.name.stringValue;
                 const carbs = doc.fields.carbs.integerValue;
                 const protein = doc.fields.protein.integerValue;
                 const fat = doc.fields.fat.integerValue;
                 const calories = calculateCalories(carbs, protein, fat);
 
-                list.insertAdjacentHTML("beforeend",
-                    `
-                    <li class="carbs">
-                        <div>
-                            <h3 class="name">${name}</h3>
-                            <div class="calories">${calories} calories</div>
-                            <ul class="macros">
-                                <li class="carbs"><div>Carbs</div><div class="value">${carbs}g</div></li>
-                                <li class="protein"><div>Protein</div><div class="value">${protein}g</div></li>
-                                <li class="fat"><div>Fat</div><div class="value">${fat}g</div></li>
-                            </ul>
-                        </div>
-                    </li>
-                    `
-                );
+                displayEntry(name, carbs, protein, fat);
             });
         });
+};
+
+const displayEntry = (name, carbs, protein, fat) => {
+    list.insertAdjacentHTML("beforeend",
+        `<li class="carbs">
+            <div>
+                <h3 class="name">${capitalize(name)}</h3>
+                <div class="calories">${calories} calories</div>
+                <ul class="macros">
+                    <li class="carbs"><div>Carbs</div><div class="value">${carbs}g</div></li>
+                    <li class="protein"><div>Protein</div><div class="value">${protein}g</div></li>
+                    <li class="fat"><div>Fat</div><div class="value">${fat}g</div></li>
+                </ul>
+            </div>
+        </li>`
+    );
 };
 
 init();
