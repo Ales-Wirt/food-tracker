@@ -3,7 +3,7 @@ import { capitalize, calculateCalories } from "./helpers.js";
 import snackbar from "snackbar";
 import 'snackbar/dist/snackbar.min.css';
 
-const API = new FetchWrapper('https://firestore.googleapis.com/v1/projects/jsdemo-3f387/databases/(default)/documents/foodapp_aw3');
+const API = new FetchWrapper('https://firestore.googleapis.com/v1/projects/jsdemo-3f387/databases/(default)/documents/foodappapp');
 
 const form = document.getElementById("create-form");
 const list = document.getElementById("food-list");
@@ -49,4 +49,36 @@ form.addEventListener("submit", async e => {
 
         form.reset();
     })
-})
+});
+
+const init = () => {
+    API.get("/?pageSize=100")
+        .then(data => {
+            console.log(data)
+            data.documents?.forEach(doc => {
+                const name = capitalize(doc.fields.name.stringValue);
+                const carbs = doc.fields.carbs.integerValue;
+                const protein = doc.fields.protein.integerValue;
+                const fat = doc.fields.fat.integerValue;
+                const calories = calculateCalories(carbs, protein, fat);
+
+                list.insertAdjacentHTML("beforeend",
+                    `
+                    <li class="carbs">
+                        <div>
+                            <h3 class="name">${name}</h3>
+                            <div class="calories">${calories} calories</div>
+                            <ul class="macros">
+                                <li class="carbs"><div>Carbs</div><div class="value">${carbs}g</div></li>
+                                <li class="protein"><div>Protein</div><div class="value">${protein}g</div></li>
+                                <li class="fat"><div>Fat</div><div class="value">${fat}g</div></li>
+                            </ul>
+                        </div>
+                    </li>
+                    `
+                );
+            });
+        });
+};
+
+init();
