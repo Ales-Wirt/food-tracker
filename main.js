@@ -1,7 +1,9 @@
 import FetchWrapper from "./fetch_wrapper.js";
 import { capitalize, calculateCalories } from "./helpers.js";
+import snackbar from "snackbar";
+import 'snackbar/dist/snackbar.min.css';
 
-const API = new FetchWrapper('https://firestore.googleapis.com/v1/projects/jsdemo-3f387/databases/(default)/documents/foodapp_aw1');
+const API = new FetchWrapper('https://firestore.googleapis.com/v1/projects/jsdemo-3f387/databases/(default)/documents/foodapp_aw3');
 
 const form = document.getElementById("create-form");
 const list = document.getElementById("food-list");
@@ -22,10 +24,14 @@ form.addEventListener("submit", async e => {
         }
     })
     .then(data => {
+        
         if(data.error) {
+            snackbar.show("Failure")
             return;
         }
-
+        
+        snackbar.show("Success");
+        
         list.insertAdjacentHTML(
             "beforeend",
             `<li class="card">
