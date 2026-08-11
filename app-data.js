@@ -22,4 +22,10 @@ export default class AppData {
     getTotalFat() {
         return this.food.map(f => f.fat).reduce((acc, curr) => acc + curr, 0);
     }
+
+    getTotalCalories() {
+        return this.getTotalCarbs() * 4 +
+            this.getTotalProtein() * 4 +
+            this.getTotalFat() * 9;
+    }
 }

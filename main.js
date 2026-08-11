@@ -14,7 +14,7 @@ const name = document.getElementById("create-name");
 const carbs = document.getElementById("create-carbs");
 const protein = document.getElementById("create-protein");
 const fat = document.getElementById("create-fat");
-
+const totalCalories = document.querySelector("#total-calories");
 
 let chartInstance = null;
 
@@ -45,11 +45,20 @@ form.addEventListener("submit", async e => {
             data.fields.fat.integerValue
         );
 
-        renderChart();
+        render();
 
         form.reset();
     })
 });
+
+const updateTotalCalories = () => {
+    totalCalories.textContent = appData.getTotalCalories();
+}
+
+const render =  () => {
+    updateTotalCalories();
+    renderChart();
+}
 
 const init = () => {
     API.get("/?pageSize=100")
@@ -64,7 +73,7 @@ const init = () => {
                 displayEntry(name, carbs, protein, fat);
             });
 
-            renderChart();
+            render();
         });
 };
 
